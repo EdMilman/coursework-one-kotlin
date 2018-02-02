@@ -98,22 +98,26 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val r: Int
         val L2: String
 
-        val ins = scan()
-        val con = Class.forName("sml.instructions." + ins.capitalize() + "Instruction").constructors.first()
-        return when (con.parameterCount) { // replace with reflection
+        val con = Class.forName("sml.instructions." + scan().capitalize() + "Instruction").constructors.first()
+        return when (con.parameterCount) {
             4 -> {
                 r = scanInt()
                 s1 = scanInt()
                 s2 = scanInt()
                 con.newInstance(label, r, s1, s2) as Instruction
             }
-
             3 -> {
-                r = scanInt()
-                s1 = scanInt()
-                con.newInstance(label, r, s1) as Instruction
+                when(con.parameterTypes[2].toString()){
+                    "int" -> {r = scanInt()
+                        s1 = scanInt()
+                        con.newInstance(label, r, s1) as Instruction}
+                    else -> {
+                        r = scanInt()
+                        L2 = scan()
+                        con.newInstance(label, r, L2) as Instruction
+                    }
+                }
             }
-
             else -> {
                 NoOpInstruction(label, line)
             }

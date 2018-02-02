@@ -1,8 +1,6 @@
 package sml
 
-import sml.instructions.AddInstruction
-import sml.instructions.LinInstruction
-import sml.instructions.NoOpInstruction
+import sml.instructions.*
 import java.io.File
 import java.io.IOException
 import java.util.Scanner
@@ -98,6 +96,7 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val s1: Int // Possible operands of the instruction
         val s2: Int
         val r: Int
+        val L2: String
 
         val ins = scan()
         return when (ins) { // replace with reflection
@@ -111,6 +110,33 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
                 r = scanInt()
                 s1 = scanInt()
                 LinInstruction(label, r, s1)
+            }
+            "div" -> {
+                r = scanInt()
+                s1 = scanInt()
+                s2 = scanInt()
+                DivInstruction(label, r, s1, s2)
+            }
+            "mul" -> {
+                r = scanInt()
+                s1 = scanInt()
+                s2 = scanInt()
+                MulInstruction(label, r, s1, s2)
+            }
+            "sub" -> {
+                r = scanInt()
+                s1 = scanInt()
+                s2 = scanInt()
+                SubInstruction(label, r, s1, s2)
+            }
+            "out" -> {
+                r = scanInt()
+                OutInstruction(label, r)
+            }
+            "bnz" -> {
+                s1 = scanInt()
+                L2 = scan()
+                BnzInstruction(label, s1, L2)
             }
         // You will have to write code here for the other instructions
             else -> {

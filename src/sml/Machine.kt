@@ -99,46 +99,21 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val L2: String
 
         val ins = scan()
-        return when (ins) { // replace with reflection
-            "add" -> {
+        val con = Class.forName("sml.instructions." + ins.capitalize() + "Instruction").constructors.first()
+        return when (con.parameterCount) { // replace with reflection
+            4 -> {
                 r = scanInt()
                 s1 = scanInt()
                 s2 = scanInt()
-                AddInstruction(label, r, s1, s2)
+                con.newInstance(label, r, s1, s2) as Instruction
             }
-            "lin" -> {
+
+            3 -> {
                 r = scanInt()
                 s1 = scanInt()
-                LinInstruction(label, r, s1)
+                con.newInstance(label, r, s1) as Instruction
             }
-            "div" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                DivInstruction(label, r, s1, s2)
-            }
-            "mul" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                MulInstruction(label, r, s1, s2)
-            }
-            "sub" -> {
-                r = scanInt()
-                s1 = scanInt()
-                s2 = scanInt()
-                SubInstruction(label, r, s1, s2)
-            }
-            "out" -> {
-                r = scanInt()
-                OutInstruction(label, r)
-            }
-            "bnz" -> {
-                s1 = scanInt()
-                L2 = scan()
-                BnzInstruction(label, s1, L2)
-            }
-        // You will have to write code here for the other instructions
+
             else -> {
                 NoOpInstruction(label, line)
             }

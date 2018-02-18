@@ -3,7 +3,7 @@ import sml.Instruction
 import sml.Machine
 
 /**
- * Describes the SML ADD instruction
+ * Describes the SML MUL instruction
  *
  */
 class MulInstruction(label: String, val result: Int, val op1: Int, val op2: Int) : Instruction(label, "mul") {

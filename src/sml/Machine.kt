@@ -5,6 +5,7 @@ import java.io.File
 import java.io.IOException
 import java.util.Scanner
 import kotlin.collections.ArrayList
+import kotlin.reflect.jvm.jvmErasure
 
 /*
  * The machine language interpreter
@@ -97,24 +98,27 @@ data class Machine(var pc: Int, val noOfRegisters: Int) {
         val s2: Int
         val r: Int
         val L2: String
-
-        val con = Class.forName("sml.instructions." + scan().capitalize() + "Instruction").constructors.first()
-        return when (con.parameterCount) {
+        // create constructor for instruction passed in
+        val con = Class.forName("sml.instructions." + scan().capitalize() + "Instruction").kotlin.constructors.first()
+        // pattern matching on constructor parameter size
+        return when (con.parameters.size) {
             4 -> {
                 r = scanInt()
                 s1 = scanInt()
                 s2 = scanInt()
-                con.newInstance(label, r, s1, s2) as Instruction
+                con.call(label, r, s1, s2) as Instruction
             }
             3 -> {
-                when(con.parameterTypes[2].toString()){
-                    "int" -> {r = scanInt()
+                r = scanInt()
+                // check parameter type to ensure correct usage of scan/scanInt
+                when(con.parameters[2].type.jvmErasure){
+                    kotlin.Int::class -> {
                         s1 = scanInt()
-                        con.newInstance(label, r, s1) as Instruction}
+                        con.call(label, r, s1) as Instruction
+                    }
                     else -> {
-                        r = scanInt()
                         L2 = scan()
-                        con.newInstance(label, r, L2) as Instruction
+                        con.call(label, r, L2) as Instruction
                     }
                 }
             }

@@ -4,7 +4,7 @@ import sml.Instruction
 import sml.Machine
 
 /**
- * Describes the SML ADD instruction
+ * Describes the SML SUB instruction
  *
  */
 class SubInstruction(label: String, val result: Int, val op1: Int, val op2: Int) : Instruction(label, "sub") {
